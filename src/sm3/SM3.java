@@ -1,4 +1,4 @@
-package sm2;
+package sm3;
 
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
