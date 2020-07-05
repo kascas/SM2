@@ -6,12 +6,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static sm2.Curve.gx;
-import static sm2.Curve.gy;
-import static sm2.Curve.p;
-import static sm2.Curve.a;
-import static sm2.Curve.b;
-import static sm2.Curve.n;
+import static sm2.Curve.*;
 
 public class KeyPair {
     /**
@@ -24,6 +19,12 @@ public class KeyPair {
      */
     public KeyPair() {
         this.keypair = generator();
+    }
+    
+    public KeyPair(BigInteger dA, ECPoint PA) {
+        keypair = new ArrayList<>();
+        this.keypair.add(dA);
+        this.keypair.add(PA);
     }
     
     /**

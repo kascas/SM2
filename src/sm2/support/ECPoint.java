@@ -3,12 +3,7 @@ package sm2.support;
 import java.math.BigInteger;
 import java.util.Random;
 
-import static sm2.Curve.gx;
-import static sm2.Curve.gy;
-import static sm2.Curve.p;
-import static sm2.Curve.a;
-import static sm2.Curve.b;
-import static sm2.Curve.n;
+import static sm2.Curve.*;
 
 public class ECPoint {
     
@@ -174,7 +169,7 @@ public class ECPoint {
             }
             tmp = plus(tmp, tmp);
             times = times.shiftRight(1);
-        } while (times.intValue() != 0);
+        } while (times.compareTo(BigInteger.ZERO) != 0);
         return result;
     }
     
