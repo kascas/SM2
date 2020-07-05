@@ -1,4 +1,4 @@
-package sm2;
+package sm2.support;
 
 import java.math.BigInteger;
 import java.util.Random;
