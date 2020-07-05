@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class SM3 {
-
+    
     private static char[] hexEnum = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
             '9', 'a', 'b', 'c', 'd', 'e', 'f'};
     private static final String ivHexStr = "7380166f 4914b2b9 172442d7 da8a0600 a96f30bc 163138aa e38dee4d b0fb0e4e";
@@ -16,7 +16,7 @@ public class SM3 {
     private static final Integer T2 = 0x7a879d8a;
     private static final byte[] FirstPadding = {(byte) 0x80};
     private static final byte[] ZeroPadding = {(byte) 0x00};
-
+    
     private static int T(int j) {
         if (j <= 15) {
             return T1;
@@ -24,7 +24,7 @@ public class SM3 {
             return T2;
         }
     }
-
+    
     private static Integer FF(Integer x, Integer y, Integer z, int j) {
         if (j <= 15) {
             return x ^ y ^ z;
@@ -32,7 +32,7 @@ public class SM3 {
             return (x & y) | (x & z) | (y & z);
         }
     }
-
+    
     private static Integer GG(Integer x, Integer y, Integer z, int j) {
         if (j <= 15) {
             return x ^ y ^ z;
@@ -40,15 +40,15 @@ public class SM3 {
             return (x & y) | (~x & z);
         }
     }
-
+    
     private static Integer P0(Integer x) {
         return x ^ Integer.rotateLeft(x, 9) ^ Integer.rotateLeft(x, 17);
     }
-
+    
     private static Integer P1(Integer x) {
         return x ^ Integer.rotateLeft(x, 15) ^ Integer.rotateLeft(x, 23);
     }
-
+    
     /**
      * 'padding' is used to pad msg
      *
@@ -76,7 +76,7 @@ public class SM3 {
         bytearray.write(LongToBytes(sourceLen));
         return bytearray.toByteArray();
     }
-
+    
     private static byte[] LongToBytes(long l) {
         byte[] bytes = new byte[8];
         for (int i = 0; i < 8; i++) {
@@ -84,7 +84,7 @@ public class SM3 {
         }
         return bytes;
     }
-
+    
     /**
      * 'hash' is the main function
      *
@@ -103,7 +103,7 @@ public class SM3 {
         }
         return vi;
     }
-
+    
     /**
      * 'CF' is a compression function
      *
@@ -122,7 +122,7 @@ public class SM3 {
         f = toInteger(vi, 5);
         g = toInteger(vi, 6);
         h = toInteger(vi, 7);
-
+        
         int[] w = new int[68];
         int[] wp = new int[64];
         for (int i = 0; i < 16; i++) {
@@ -156,7 +156,7 @@ public class SM3 {
         }
         return v;
     }
-
+    
     /**
      * 'toInteger' extracts an integer from a byte-array
      *
@@ -171,9 +171,9 @@ public class SM3 {
             valueStr.append(hexEnum[(byte) (source[index * 4 + i] & 0x0f)]);
         }
         return Long.valueOf(valueStr.toString(), 16).intValue();
-
+        
     }
-
+    
     /**
      * 'toByteArray' sets 8 integers into a byte-array
      *
@@ -194,7 +194,7 @@ public class SM3 {
         baos.write(toByteArray(h));
         return baos.toByteArray();
     }
-
+    
     /**
      * 'toByteArray' is used to convert integer into byte-array
      *
@@ -209,7 +209,7 @@ public class SM3 {
         byteArray[3] = (byte) (i & 0xff);
         return byteArray;
     }
-
+    
     /**
      * 'ByteToHex' is used to convert byte into hex-string
      *
@@ -222,7 +222,7 @@ public class SM3 {
         int d2 = n & 15;
         return "" + hexEnum[d1] + hexEnum[d2];
     }
-
+    
     /**
      * 'hexdigit' is used to convert byte-array into hex-string
      *
@@ -236,7 +236,9 @@ public class SM3 {
         }
         return resultSb.toString();
     }
+}
 
+class SM3Test {
     public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
         String a = sc.nextLine();
