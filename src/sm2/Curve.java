@@ -2,11 +2,7 @@ package sm2;
 
 import java.math.BigInteger;
 
-/**
- * @author: DELL
- * @date: 2020/7/5-14:55
- * @description:
- */
+
 public class Curve {
     
     /**
