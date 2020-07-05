@@ -139,7 +139,7 @@ public class ECPoint {
      * @param p 待判断的点
      * @return 判断结果
      */
-    private static boolean isO(ECPoint p) {
+    public static boolean isO(ECPoint p) {
         return p.getX() == null && p.getY() == null;
     }
     
