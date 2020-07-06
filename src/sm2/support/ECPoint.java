@@ -135,7 +135,7 @@ public class ECPoint {
         if (isO(this)) return p2;
         if (isO(p2)) return this;
         BigInteger L, x3, y3;
-        if (this.x.compareTo(p2.getX()) == 0) {
+        if (this.x.compareTo(p2.x) == 0) {
             if (this.y.compareTo(p2.getY()) == 0) {
                 L = BigInteger.valueOf(3).multiply(this.x.pow(2)).add(a).multiply(this.y.multiply(BigInteger.valueOf(2)).modInverse(p));
                 x3 = L.pow(2).subtract(this.x.multiply(BigInteger.valueOf(2))).mod(p);
@@ -146,7 +146,7 @@ public class ECPoint {
             }
         } else {
             L = p2.y.subtract(this.y).multiply(p2.x.subtract(this.x).modInverse(p));
-            x3 = L.pow(2).subtract(this.x.add(p2.getX())).mod(p);
+            x3 = L.pow(2).subtract(this.x.add(p2.x)).mod(p);
             y3 = L.multiply(this.x.subtract(x3)).subtract(this.y).mod(p);
             return new ECPoint(x3, y3);
         }
