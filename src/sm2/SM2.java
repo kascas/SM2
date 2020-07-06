@@ -166,12 +166,18 @@ class SM2Test {
         ArrayList<byte[]> SIGN;
         
         s = new SM2(IDA, key);
+        for (int i = 0; i < 100; i++) {
+            SIGN = s.sign(M);
+        }
         SIGN = s.sign(M);
         System.out.println(">>> sign");
         System.out.println("r: " + Convert.Bytes_Integer(SIGN.get(0)).toString(16));
         System.out.println("s: " + Convert.Bytes_Integer(SIGN.get(1)).toString(16));
         
         s = new SM2(IDA, key.getPublic());
+        for (int i = 0; i < 100; i++) {
+            s.verify(M, SIGN);
+        }
         System.out.println(">>> verify");
         System.out.println("result: " + s.verify(M, SIGN));
         System.out.println("another msg's verify: " + s.verify(_M, SIGN));
