@@ -18,6 +18,13 @@ public class SM2 {
     private BigInteger d;
     private ECPoint P;
     
+    /**
+     * 利用IDA和密钥对，实现SM2的初始化
+     *
+     * @param IDA     用户可辨别标识
+     * @param keypair 密钥对
+     * @throws Exception ZA中的异常
+     */
     public SM2(String IDA, KeyPair keypair) throws Exception {
         this.d = keypair.getPrivate();
         this.P = keypair.getPublic();
@@ -44,6 +51,12 @@ public class SM2 {
         this.za = za;
     }
     
+    /**
+     * 用户信息生成函数ZA
+     *
+     * @param IDA 用户可辨别标识
+     * @throws Exception bytearray中可能出现异常
+     */
     private void ZA(String IDA) throws Exception {
         byte[] IDAbytes = IDA.getBytes(StandardCharsets.US_ASCII);
         int entlenA = IDAbytes.length * 8;
@@ -79,6 +92,13 @@ public class SM2 {
         return this.za;
     }
     
+    /**
+     * 签名函数
+     *
+     * @param M 待签名消息
+     * @return 签名的列表(r, s)
+     * @throws Exception 异常
+     */
     public ArrayList<byte[]> sign(byte[] M) throws Exception {
         byte[] _M = Convert.ByteArrayLink(this.za, M);
         ArrayList<byte[]> SIGN = new ArrayList<>();
@@ -99,6 +119,14 @@ public class SM2 {
         return SIGN;
     }
     
+    /**
+     * 验证函数
+     *
+     * @param M    待验证消息
+     * @param sign 数字签名
+     * @return 验证结果
+     * @throws Exception 异常
+     */
     public boolean verify(byte[] M, ArrayList<byte[]> sign) throws Exception {
         BigInteger r = new BigInteger(1, sign.get(0));
         BigInteger s = new BigInteger(1, sign.get(1));
@@ -129,25 +157,23 @@ class SM2Test {
         KeyPair key = new KeyPair(dA, PA);
         */
         KeyPair key = new KeyPair();
+        System.out.println("Private key: " + key.getPrivate().toString(16));
+        System.out.println("Public  key: " + key.getPublic().toString(16));
         byte[] M = "message digest".getBytes(StandardCharsets.UTF_8);
         byte[] _M = "message dagest".getBytes(StandardCharsets.UTF_8);
         String IDA = "ALICE123@YAHOO.COM";
         SM2 s;
         ArrayList<byte[]> SIGN;
         
-        for (int i = 0; i < 100; i++) {
-            s = new SM2(IDA, key);
-            SIGN = s.sign(M);
-            s = new SM2(IDA, key.getPublic());
-            s.verify(M, SIGN);
-        }
         s = new SM2(IDA, key);
         SIGN = s.sign(M);
-        System.out.println(Convert.Bytes_Integer(SIGN.get(0)).toString(16));
-        System.out.println(Convert.Bytes_Integer(SIGN.get(1)).toString(16));
+        System.out.println(">>> sign");
+        System.out.println("r: " + Convert.Bytes_Integer(SIGN.get(0)).toString(16));
+        System.out.println("s: " + Convert.Bytes_Integer(SIGN.get(1)).toString(16));
         
         s = new SM2(IDA, key.getPublic());
-        System.out.println(s.verify(M, SIGN));
-        System.out.println(s.verify(_M, SIGN));
+        System.out.println(">>> verify");
+        System.out.println("result: " + s.verify(M, SIGN));
+        System.out.println("another msg's verify: " + s.verify(_M, SIGN));
     }
 }

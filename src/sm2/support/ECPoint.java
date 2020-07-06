@@ -110,7 +110,7 @@ public class ECPoint {
      * @return 判断结果
      */
     public static boolean isO(ECPoint p) {
-        return p.getX() == null && p.getY() == null;
+        return p.x == null && p.y == null;
     }
     
     /**
@@ -120,8 +120,8 @@ public class ECPoint {
      * @return 指定进制表示的字符串
      */
     public String toString(int radix) {
-        BigInteger px = this.getX();
-        BigInteger py = this.getY();
+        BigInteger px = this.x;
+        BigInteger py = this.y;
         return ("(" + px.toString(radix) + ", " + py.toString(radix) + ")");
     }
     
@@ -135,19 +135,19 @@ public class ECPoint {
         if (isO(this)) return p2;
         if (isO(p2)) return this;
         BigInteger L, x3, y3;
-        if (this.getX().compareTo(p2.getX()) == 0) {
-            if (this.getY().compareTo(p2.getY()) == 0) {
-                L = BigInteger.valueOf(3).multiply(this.getX().pow(2)).add(a).multiply(this.getY().multiply(BigInteger.valueOf(2)).modInverse(p));
-                x3 = L.pow(2).subtract(this.getX().multiply(BigInteger.valueOf(2))).mod(p);
-                y3 = L.multiply(this.getX().subtract(x3)).subtract(this.getY()).mod(p);
+        if (this.x.compareTo(p2.getX()) == 0) {
+            if (this.y.compareTo(p2.getY()) == 0) {
+                L = BigInteger.valueOf(3).multiply(this.x.pow(2)).add(a).multiply(this.y.multiply(BigInteger.valueOf(2)).modInverse(p));
+                x3 = L.pow(2).subtract(this.x.multiply(BigInteger.valueOf(2))).mod(p);
+                y3 = L.multiply(this.x.subtract(x3)).subtract(this.y).mod(p);
                 return new ECPoint(x3, y3);
             } else {
                 return new ECPoint();
             }
         } else {
-            L = p2.getY().subtract(this.getY()).multiply(p2.getX().subtract(this.getX()).modInverse(p));
-            x3 = L.pow(2).subtract(this.getX().add(p2.getX())).mod(p);
-            y3 = L.multiply(this.getX().subtract(x3)).subtract(this.getY()).mod(p);
+            L = p2.y.subtract(this.y).multiply(p2.x.subtract(this.x).modInverse(p));
+            x3 = L.pow(2).subtract(this.x.add(p2.getX())).mod(p);
+            y3 = L.multiply(this.x.subtract(x3)).subtract(this.y).mod(p);
             return new ECPoint(x3, y3);
         }
     }
@@ -178,7 +178,7 @@ public class ECPoint {
      * @return 点的取反结果
      */
     private static ECPoint negative(ECPoint p) {
-        return new ECPoint(p.getX(), p.getY().negate());
+        return new ECPoint(p.x, p.y.negate());
     }
     
     /**
