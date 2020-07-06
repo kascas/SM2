@@ -40,7 +40,7 @@ public class KeyPair {
             do {
                 d = new BigInteger(p.bitLength(), new Random());
             } while (d.compareTo(n.subtract(BigInteger.valueOf(2))) > 0 || d.compareTo(BigInteger.ZERO) == 0);
-            P = ECPoint.multiply(new ECPoint(gx, gy), d);
+            P = new ECPoint(gx, gy).multiply(d);
             key = new ArrayList<>();
             key.add(d);
             key.add(P);
@@ -80,7 +80,7 @@ public class KeyPair {
             return false;
         } else if (y.pow(2).mod(p).compareTo(x.pow(3).add(x.multiply(a)).add(b).mod(p)) != 0) {
             return false;
-        } else return ECPoint.isO(ECPoint.multiply(P, n));
+        } else return ECPoint.isO(P.multiply(n));
     }
 }
 

@@ -128,27 +128,26 @@ public class ECPoint {
     /**
      * 椭圆曲线上的点加运算
      *
-     * @param p1 点1
      * @param p2 点2
      * @return 点加结果
      */
-    public static ECPoint plus(ECPoint p1, ECPoint p2) {
-        if (isO(p1)) return p2;
-        if (isO(p2)) return p1;
+    public ECPoint plus(ECPoint p2) {
+        if (isO(this)) return p2;
+        if (isO(p2)) return this;
         BigInteger L, x3, y3;
-        if (p1.getX().compareTo(p2.getX()) == 0) {
-            if (p1.getY().compareTo(p2.getY()) == 0) {
-                L = BigInteger.valueOf(3).multiply(p1.getX().pow(2)).add(a).multiply(p1.getY().multiply(BigInteger.valueOf(2)).modInverse(p));
-                x3 = L.pow(2).subtract(p1.getX().multiply(BigInteger.valueOf(2))).mod(p);
-                y3 = L.multiply(p1.getX().subtract(x3)).subtract(p1.getY()).mod(p);
+        if (this.getX().compareTo(p2.getX()) == 0) {
+            if (this.getY().compareTo(p2.getY()) == 0) {
+                L = BigInteger.valueOf(3).multiply(this.getX().pow(2)).add(a).multiply(this.getY().multiply(BigInteger.valueOf(2)).modInverse(p));
+                x3 = L.pow(2).subtract(this.getX().multiply(BigInteger.valueOf(2))).mod(p);
+                y3 = L.multiply(this.getX().subtract(x3)).subtract(this.getY()).mod(p);
                 return new ECPoint(x3, y3);
             } else {
                 return new ECPoint();
             }
         } else {
-            L = p2.getY().subtract(p1.getY()).multiply(p2.getX().subtract(p1.getX()).modInverse(p));
-            x3 = L.pow(2).subtract(p1.getX().add(p2.getX())).mod(p);
-            y3 = L.multiply(p1.getX().subtract(x3)).subtract(p1.getY()).mod(p);
+            L = p2.getY().subtract(this.getY()).multiply(p2.getX().subtract(this.getX()).modInverse(p));
+            x3 = L.pow(2).subtract(this.getX().add(p2.getX())).mod(p);
+            y3 = L.multiply(this.getX().subtract(x3)).subtract(this.getY()).mod(p);
             return new ECPoint(x3, y3);
         }
     }
@@ -156,18 +155,17 @@ public class ECPoint {
     /**
      * 椭圆曲线上的倍点运算
      *
-     * @param p     点
      * @param times 倍数
      * @return 倍点结果
      */
-    public static ECPoint multiply(ECPoint p, BigInteger times) {
-        ECPoint tmp = plus(p, new ECPoint());
+    public ECPoint multiply(BigInteger times) {
+        ECPoint tmp = this.plus(new ECPoint());
         ECPoint result = new ECPoint();
         do {
             if (times.and(BigInteger.ONE).intValue() == 1) {
-                result = plus(result, tmp);
+                result = result.plus(tmp);
             }
-            tmp = plus(tmp, tmp);
+            tmp = tmp.plus(tmp);
             times = times.shiftRight(1);
         } while (times.compareTo(BigInteger.ZERO) != 0);
         return result;
