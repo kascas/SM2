@@ -25,7 +25,7 @@ public class SM2 {
         this.ZA(IDA);
     }
     
-    public SM2(byte[] za, KeyPair keypair) throws Exception {
+    public SM2(byte[] za, KeyPair keypair) {
         this.d = keypair.getPrivate();
         this.P = keypair.getPublic();
         this.za = za;
@@ -38,7 +38,7 @@ public class SM2 {
         this.ZA(IDA);
     }
     
-    public SM2(byte[] za, ECPoint publickey) throws Exception {
+    public SM2(byte[] za, ECPoint publickey) {
         this.d = null;
         this.P = publickey;
         this.za = za;
@@ -135,6 +135,12 @@ class SM2Test {
         SM2 s;
         ArrayList<byte[]> SIGN;
         
+        for (int i = 0; i < 100; i++) {
+            s = new SM2(IDA, key);
+            SIGN = s.sign(M);
+            s = new SM2(IDA, key.getPublic());
+            s.verify(M, SIGN);
+        }
         s = new SM2(IDA, key);
         SIGN = s.sign(M);
         System.out.println(Convert.Bytes_Integer(SIGN.get(0)).toString(16));
