@@ -66,43 +66,6 @@ public class ECPoint {
         this.y = y;
     }
     
-    //扩展的欧几里得算法
-    /*
-    private static BigInteger[] gcd(BigInteger a, BigInteger b) {
-        BigInteger x1 = BigInteger.ONE, x2 = BigInteger.ZERO;
-        BigInteger y1 = BigInteger.ZERO, y2 = BigInteger.ONE;
-        BigInteger t1 = BigInteger.ZERO, t2 = BigInteger.ZERO;
-        BigInteger tmp;
-        while (true) {
-            t1 = x2.add(BigInteger.ZERO);
-            t2 = y2.add(BigInteger.ZERO);
-            x2 = x1.subtract(a.divide(b).multiply(x2));
-            y2 = y1.subtract(a.divide(b).multiply(y2));
-            x1 = t1.add(BigInteger.ZERO);
-            y1 = t2.add(BigInteger.ZERO);
-            if (a.mod(b).compareTo(BigInteger.ZERO) == 0) {
-                break;
-            }
-            tmp = a.add(BigInteger.ZERO);
-            a = b.add(BigInteger.ZERO);
-            b = tmp.mod(b);
-        }
-        if (b.compareTo(BigInteger.ZERO) < 0) {
-            b = b.negate();
-            x1 = x1.negate();
-            y1 = y1.negate();
-        }
-        return new BigInteger[]{b, x1, y1};
-    }
-    
-    private static BigInteger modinvert(BigInteger a, BigInteger mod) {
-        BigInteger x = gcd(a, mod)[1];
-        while (x.compareTo(BigInteger.ZERO) <= 0) {
-            x = x.add(mod);
-        }
-        return x;
-    }
-    */
     
     /**
      * 判断是否为无穷远点
