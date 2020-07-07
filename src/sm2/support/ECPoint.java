@@ -144,7 +144,7 @@ public class ECPoint {
      * @param w 窗口大小
      * @return NAFw(k)
      */
-    public static ArrayList<Integer> NAFw(BigInteger k, int w) {
+    private static ArrayList<Integer> NAFw(BigInteger k, int w) {
         ArrayList<Integer> list = new ArrayList<>();
         BigInteger ki, MASK = BigInteger.valueOf((1 << w) - 1);
         while (k.compareTo(BigInteger.ONE) >= 0) {
