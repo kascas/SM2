@@ -1,6 +1,7 @@
 package sm2.support;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Random;
 
 import static sm2.Curve.*;
@@ -153,11 +154,12 @@ public class ECPoint {
     }
     
     /**
-     * 椭圆曲线上的倍点运算
+     * 椭圆曲线上的倍点运算(由于运算速度较NAFw慢因此放弃使用)
      *
      * @param times 倍数
      * @return 倍点结果
      */
+    /*
     public ECPoint multiply(BigInteger times) {
         ECPoint tmp = this.plus(new ECPoint());
         ECPoint result = new ECPoint();
@@ -170,15 +172,67 @@ public class ECPoint {
         } while (times.compareTo(BigInteger.ZERO) != 0);
         return result;
     }
+    */
+    
+    /**
+     * NAFw算法
+     *
+     * @param k 倍数
+     * @param w 窗口大小
+     * @return NAFw(k)
+     */
+    public static ArrayList<Integer> NAFw(BigInteger k, int w) {
+        ArrayList<Integer> list = new ArrayList<>();
+        BigInteger ki, MASK = BigInteger.valueOf((1 << w) - 1);
+        while (k.compareTo(BigInteger.ONE) >= 0) {
+            if (k.and(BigInteger.ONE).intValue() == 1) {
+                ki = k.and(MASK);
+                k = k.subtract(ki);
+                list.add(ki.intValue());
+            } else {
+                list.add(0);
+            }
+            k = k.shiftRight(1);
+        }
+        return list;
+    }
+    
+    
+    /**
+     * 椭圆曲线上的倍点运算
+     *
+     * @param k 倍数
+     * @return 倍点结果
+     */
+    public ECPoint multiply(BigInteger k) {
+        ArrayList<Integer> kList = NAFw(k, 4);
+        ArrayList<ECPoint> pList = new ArrayList<>();
+        ECPoint P2 = this.plus(this), Q = new ECPoint(), tmp = this.plus(new ECPoint());
+        pList.add(null);
+        pList.add(this);
+        int ki = 0;
+        for (int i = 3; i <= (1 << 4) - 1; i += 2) {
+            pList.add(null);
+            tmp = tmp.plus(P2);
+            pList.add(tmp);
+        }
+        for (int i = kList.size() - 1; i >= 0; i--) {
+            Q = Q.plus(Q);
+            ki = kList.get(i);
+            if (ki != 0) {
+                Q = Q.plus(pList.get(ki));
+            }
+        }
+        return Q;
+    }
     
     /**
      * 椭圆曲线上的取反运算
      *
-     * @param p 点
      * @return 点的取反结果
      */
-    private static ECPoint negative(ECPoint p) {
-        return new ECPoint(p.x, p.y.negate());
+    private ECPoint negative() {
+        return new ECPoint(this.x, this.y.negate());
     }
     
     /**
@@ -278,19 +332,30 @@ public class ECPoint {
 
 class ECPointTest {
     public static void main(String[] args) {
-        /*
-        ECPoint p1 = new ECPoint(BigInteger.valueOf(10), BigInteger.valueOf(2));
+        
+        ECPoint p1 = new ECPoint(new BigInteger("98249f48aa444068f07b943ac27827786192fe0e06c0cf60df650d42e86f7904", 16),
+                new BigInteger("18400dcd5fe8c19a56971b6bb2d8dec9c74c4c990d7063c60808555db729185d", 16));
         ECPoint p2 = new ECPoint(BigInteger.valueOf(9), BigInteger.valueOf(6));
-        ECPoint result = ECPoint.plus(p1, p2);
+        ECPoint result;
+        //result = p1.plus(p2);
+        //System.out.println(result.toString(16));
+        BigInteger times = new BigInteger(p.bitLength(), new Random());
+        //BigInteger times = BigInteger.valueOf(1123456789);
+        result = p1.multiply(times);
         System.out.println(result.toString(16));
-        result = ECPoint.multiply(p1, BigInteger.valueOf(2));
+        /*
+        result = p1.multi(times);
         System.out.println(result.toString(16));
-        System.out.println(ECPoint.decompress(BigInteger.valueOf(9), 1));
+        result = p1.mult(times);
+        System.out.println(result.toString(16));
         */
+        
+        /*
         BigInteger gx = new BigInteger(
                 "32C4AE2C" + "1F198119" + "5F990446" + "6A39C994" + "8FE30BBF" + "F2660BE1" + "715A4589" + "334C74C7", 16);
         String tmp;
         tmp = ECPoint.decompress(gx, 0).toString(16);
         System.out.println(tmp);
+        */
     }
 }
