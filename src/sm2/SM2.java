@@ -4,6 +4,7 @@ package sm2;
 import sm2.support.Convert;
 import sm2.support.ECPoint;
 import sm3.SM3;
+import sun.reflect.annotation.ExceptionProxy;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -23,13 +24,16 @@ public class SM2 {
      *
      * @param IDA     用户可辨别标识
      * @param keypair 密钥对
-     * @throws Exception ZA中的异常
      */
-    public SM2(String IDA, KeyPair keypair) throws Exception {
+    public SM2(String IDA, KeyPair keypair){
         this.d = keypair.getPrivate();
         this.P = keypair.getPublic();
         this.za = null;
-        this.ZA(IDA);
+        try {
+            this.ZA(IDA);
+        } catch (Exception e) {
+            this.za = null;
+        }
     }
     
     public SM2(byte[] za, KeyPair keypair) {
@@ -38,11 +42,15 @@ public class SM2 {
         this.za = za;
     }
     
-    public SM2(String IDA, ECPoint publickey) throws Exception {
+    public SM2(String IDA, ECPoint publickey) {
         this.d = null;
         this.P = publickey;
         this.za = null;
-        this.ZA(IDA);
+        try {
+            this.ZA(IDA);
+        } catch (Exception e) {
+            this.za = null;
+        }
     }
     
     public SM2(byte[] za, ECPoint publickey) {
@@ -97,12 +105,19 @@ public class SM2 {
      *
      * @param M 待签名消息
      * @return 签名的列表(r, s)
-     * @throws Exception 异常
      */
-    public ArrayList<byte[]> sign(byte[] M) throws Exception {
-        byte[] _M = Convert.ByteArrayLink(this.za, M);
-        ArrayList<byte[]> SIGN = new ArrayList<>();
-        BigInteger e = new BigInteger(1, SM3.hash(_M));
+    public ArrayList<byte[]> sign(byte[] M) {
+        byte[] _M;
+        ArrayList<byte[]> SIGN;
+        BigInteger e;
+        try {
+            _M = Convert.ByteArrayLink(this.za, M);
+            SIGN = new ArrayList<>();
+            e = new BigInteger(1, SM3.hash(_M));
+        } catch (Exception ex) {
+            System.out.println("sign error");
+            return null;
+        }
         BigInteger k, r, x, s;
         ECPoint G = new ECPoint(gx, gy);
         do {
@@ -125,9 +140,8 @@ public class SM2 {
      * @param M    待验证消息
      * @param sign 数字签名
      * @return 验证结果
-     * @throws Exception 异常
      */
-    public boolean verify(byte[] M, ArrayList<byte[]> sign) throws Exception {
+    public boolean verify(byte[] M, ArrayList<byte[]> sign) {
         BigInteger r = new BigInteger(1, sign.get(0));
         BigInteger s = new BigInteger(1, sign.get(1));
         if (s.compareTo(n) >= 0 || s.compareTo(BigInteger.ZERO) == 0) {
@@ -136,8 +150,15 @@ public class SM2 {
         if (r.compareTo(n) >= 0 || r.compareTo(BigInteger.ZERO) == 0) {
             return false;
         }
-        byte[] _M = Convert.ByteArrayLink(this.za, M);
-        BigInteger e = new BigInteger(1, SM3.hash(_M));
+        byte[] _M;
+        BigInteger e;
+        try {
+            _M = Convert.ByteArrayLink(this.za, M);
+            e = new BigInteger(1, SM3.hash(_M));
+        } catch (Exception ex) {
+            System.out.println("verify error");
+            return false;
+        }
         BigInteger t = r.add(s).mod(n);
         if (t.compareTo(BigInteger.ZERO) == 0) {
             return false;
@@ -148,7 +169,7 @@ public class SM2 {
 }
 
 class SM2Test {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args){
         /*
         BigInteger dA = new BigInteger("128B2FA8BD433C6C068C8D803DFF79792A519A55171B1B650C23661D15897263", 16);
         BigInteger x = new BigInteger("0AE4C7798AA0F119471BEE11825BE46202BB79E2A5844495E97C04FF4DF2548A", 16);

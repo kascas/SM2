@@ -7,18 +7,13 @@ import java.util.Scanner;
 
 
 public class Convert {
-    public static byte[] ByteArrayLink(byte[]... params) {
+    public static byte[] ByteArrayLink(byte[]... params) throws IOException {
         ByteArrayOutputStream bytearray = new ByteArrayOutputStream();
-        //如果抛出异常则返回null
         byte[] result = null;
-        try {
-            for (int i = 0; i < params.length; i++) {
-                bytearray.write(params[i]);
-            }
-            result = bytearray.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (int i = 0; i < params.length; i++) {
+            bytearray.write(params[i]);
         }
+        result = bytearray.toByteArray();
         return result;
     }
     
@@ -38,15 +33,9 @@ public class Convert {
         return x;
     }
     
-    public static byte[] Integer_Bytes(BigInteger x, int k) {
-        try {
-            if (x.compareTo(BigInteger.valueOf(2).pow(8 * k)) >= 0) {
-                throw new Exception("x is too large to convert");
-            }
-        } catch (Exception e) {
-            //如果抛出异常，则返回null
-            System.out.println(e);
-            return null;
+    public static byte[] Integer_Bytes(BigInteger x, int k) throws Exception {
+        if (x.compareTo(BigInteger.valueOf(2).pow(8 * k)) >= 0) {
+            throw new Exception("x is too large to convert");
         }
         byte[] m = new byte[k];
         for (int i = k - 1; i >= 0; i--) {
@@ -63,12 +52,16 @@ class ConvertTest {
         String a = sc.nextLine();
         String b = sc.nextLine();
         String c = sc.nextLine();
-        byte[] result = Convert.ByteArrayLink(a.getBytes(), b.getBytes(), c.getBytes());
-        System.out.println(new String(result));
-        while (true) {
-            String str = sc.next();
-            byte[] bytes = Convert.Integer_Bytes(new BigInteger(str), 100);
-            System.out.println(Convert.Bytes_Integer(bytes));
+        try {
+            byte[] result = Convert.ByteArrayLink(a.getBytes(), b.getBytes(), c.getBytes());
+            System.out.println(new String(result));
+            while (true) {
+                String str = sc.next();
+                byte[] bytes = Convert.Integer_Bytes(new BigInteger(str), 100);
+                System.out.println(Convert.Bytes_Integer(bytes));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
