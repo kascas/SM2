@@ -25,7 +25,7 @@ public class SM2 {
      * @param IDA     用户可辨别标识
      * @param keypair 密钥对
      */
-    public SM2(String IDA, KeyPair keypair){
+    public SM2(String IDA, KeyPair keypair) {
         this.d = keypair.getPrivate();
         this.P = keypair.getPublic();
         this.za = null;
@@ -108,11 +108,10 @@ public class SM2 {
      */
     public ArrayList<byte[]> sign(byte[] M) {
         byte[] _M;
-        ArrayList<byte[]> SIGN;
+        ArrayList<byte[]> SIGN = new ArrayList<>();
         BigInteger e;
         try {
             _M = Convert.ByteArrayLink(this.za, M);
-            SIGN = new ArrayList<>();
             e = new BigInteger(1, SM3.hash(_M));
         } catch (Exception ex) {
             System.out.println("sign error");
@@ -169,7 +168,7 @@ public class SM2 {
 }
 
 class SM2Test {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         /*
         BigInteger dA = new BigInteger("128B2FA8BD433C6C068C8D803DFF79792A519A55171B1B650C23661D15897263", 16);
         BigInteger x = new BigInteger("0AE4C7798AA0F119471BEE11825BE46202BB79E2A5844495E97C04FF4DF2548A", 16);
