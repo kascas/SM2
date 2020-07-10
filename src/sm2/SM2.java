@@ -4,7 +4,6 @@ package sm2;
 import sm2.support.Convert;
 import sm2.support.ECPoint;
 import sm3.SM3;
-import sun.reflect.annotation.ExceptionProxy;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
